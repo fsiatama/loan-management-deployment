@@ -1,0 +1,57 @@
+version: "3"
+services:
+  blue-phoenix-api:
+    build:
+      context: ../blue-phoenix-api
+      dockerfile: Dockerfile
+    image: blue-phoenix-api
+    container_name: blue-phoenix-api
+    restart: unless-stopped
+    tty: true
+    environment:
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_API_PORT: ${AUTH_API_PORT}
+      DB_SERVER: ${DB_SERVER}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DATABASE_URL: ${DATABASE_URL}
+      PAYMENT_CONCEPT_ID: ${PAYMENT_CONCEPT_ID}
+      LATE_FEE_CONCEPT_ID: ${LATE_FEE_CONCEPT_ID}
+    networks:
+      - code-network
+  blue-phoenix-admin-ui:
+    build:
+      context: ../blue-phoenix-admin-ui
+      dockerfile: Dockerfile
+    image: blue-phoenix-admin-ui
+    container_name: blue-phoenix-admin-ui
+    volumes:
+      - ./blue-phoenix-admin-ui/dist:/app/dist
+  web:
+    image: nginx:latest
+    container_name: sicex-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../blue-phoenix-admin-ui/dist:/var/www/html:ro
+      - ./web-config/000-default.conf:/etc/nginx/conf.d/default.conf
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    depends_on:
+      - blue-phoenix-admin-ui
+    networks:
+      - code-network
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+  
+networks:
+  code-network:
+    driver: bridge
