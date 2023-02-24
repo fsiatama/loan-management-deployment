@@ -20,6 +20,12 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       PAYMENT_CONCEPT_ID: ${PAYMENT_CONCEPT_ID}
       LATE_FEE_CONCEPT_ID: ${LATE_FEE_CONCEPT_ID}
+    ports:
+      - '3000:3000'
+    expose:
+      - 3000
+    links:
+      - blue-phoenix-admin-ui
     networks:
       - code-network
   blue-phoenix-admin-ui:
