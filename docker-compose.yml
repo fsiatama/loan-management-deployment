@@ -35,7 +35,7 @@ services:
     image: blue-phoenix-admin-ui
     container_name: blue-phoenix-admin-ui
     volumes:
-      - ../blue-phoenix-admin-ui/dist:/dist
+      - ../blue-phoenix-admin-ui/dist:/app/dist
   web:
     image: nginx:latest
     container_name: blue-phoenix-nginx
