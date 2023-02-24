@@ -35,10 +35,10 @@ services:
     image: blue-phoenix-admin-ui
     container_name: blue-phoenix-admin-ui
     volumes:
-      - ./blue-phoenix-admin-ui/dist:/dist
+      - ../blue-phoenix-admin-ui/dist:/dist
   web:
     image: nginx:latest
-    container_name: sicex-nginx
+    container_name: blue-phoenix-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -57,7 +57,6 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
-  
 networks:
   code-network:
     driver: bridge
